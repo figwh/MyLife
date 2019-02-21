@@ -10,7 +10,8 @@ from errorhandling import log_error
 def strip_html(text):
     def fixup(m):
         text = m.group(0)
-        if text == '<br>' or text == '<br/>':
+        #if text == '<br>' or text == '<br/>':
+        if text == '<br>' or text == '<br/>' or text == '</div>':
         	return '\r\n'
         if text[:1] == "<":
             return "" # ignore tags
@@ -33,6 +34,7 @@ def strip_html(text):
                         pass
                 else:
                     return unicode(entity, "latin-1")
+                    #return unicode(entity, "utf-8")
         
         return text # leave as is
     
@@ -114,9 +116,9 @@ class ReceiveMailHandler(InboundMailHandler):
 			post_text = post_text.rstrip()
 			
 			if post.text:
-				post.text = post.text + '\r\n\r\n' + Post.seperator + '\r\n\r\n' + post_text
+				post.text = post.text.encode("UTF-8") + '\r\n\r\n' + Post.seperator + '\r\n\r\n' + post_text
 			else:
-				post.text = post_text
+				post.text = post_text.encode("UTF-8")
 
 
 			self.process_attachments(mail_message, post)

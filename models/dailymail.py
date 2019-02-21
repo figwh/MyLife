@@ -50,9 +50,11 @@ class DailyMail():
 				slug_id = self.get_slug()
 
 				slug = Slug(slug=slug_id, date=today)
+				#logging.info('after filtered 2: %s ' % slug)
 
 				slug.put()
 
+			#logging.info('out: %s ' % slug.slug)
 			subject = "It's %s, %s %s - How did your day go?" % (today.strftime('%A'), today.strftime("%b"), today.day)
 			app_id = app_identity.get_application_id()
 
@@ -143,13 +145,16 @@ OLD_POST
 
 	def get_slug(self):
 
-		slug = str(uuid.uuid4())[0:13].replace('-', '')		
+		#slug = str(uuid.uuid4())[0:13].replace('-', '')        
+		slug = (datetime.datetime.utcnow()+datetime.timedelta(hours=8)).strftime("abcd%Y%m%d")
+		#logging.info('get new slug: %s ' % slug)
 
 		# OK, this should never happen, but I'm not using the full uuid here
 		# so lets just make sure...
 		while Slug.query(Slug.slug == slug).get():
 			slug = str(uuid.uuid4())[0:13].replace('-', '')		
 
+		#logging.info('after filtered: %s ' % slug)
 		return slug
 
 	def check_if_intro_email_sent_today(self, date):
